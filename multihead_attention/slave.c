@@ -12,12 +12,18 @@
 extern const int h_B, h_S, h_D, h_N, h_PD;
 extern const float *h_x, *h_w;
 extern float *h_Q, *h_K, *h_V, *h_QK, *h_y, *h_QN, *h_KN, *h_VN;
+__thread_local volatile int get_reply, put_reply; 
 
 // 调用并行模板
-void par_multihead_attn(Args_t arg)
+void par_multihead_attn(Args_t arg, volatile int get_reply, volatile int put_reply)
 {
-	volatile int get_reply, put_reply; 
 	const int s_B, s_S, s_D, s_N, s_PD;
+	s_B = h_B;
+	s_S = h_S;
+	s_D = h_D;
+	s_N = h_N;
+	s_PD = h_PD;
+
 	const float s_x[MAX_DATA], s_w[MAX_DATA];
 	float s_Q[MAX_DATA], s_K[MAX_DATA], s_V[MAX_DATA], s_QK[MAX_DATA], s_y[MAX_DATA], s_QN[MAX_DATA], s_KN[MAX_DATA], h_VN[MAX_DATA];
 
@@ -104,6 +110,6 @@ static void par_local_trans_head(const int id, float* src, float* dst, int B, in
         for(int n = 0; n < N; n ++)
             for(int s = 0; s < S; s ++)
                 for(int pd = 0; pd < pD; pd ++)
-                    DST(b,n,s,pd) = SRC(b,s,n*pD+pd);
+                    DST(id,n,s,pd) = SRC(id,s,n*pD+pd);
 }
 
