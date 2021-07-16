@@ -49,7 +49,7 @@ void par1(Args_t arg, volatile int get_reply, volatile int put_reply, int argn)
 	for (int b = 0; b < B; b++) {
 		par_local_gemm_rcr(id, s_x[0]+b*S*D, D, s_w[0], D, s_Q[0]+b*S*D, D, S, D, D);
 		par_local_gemm_rcr(id, s_x[0]+b*S*D, D, s_w[0]+D*D, D, s_K[0]+b*S*D, D, S, D, D);
-        par_local_gemm_rcr(id, s_x[0]+b*S*D, D, s_w[0]+2*D*D, D, s_V[0]+b*S*D, D, S, D, D);
+        	par_local_gemm_rcr(id, s_x[0]+b*S*D, D, s_w[0]+2*D*D, D, s_V[0]+b*S*D, D, S, D, D);
 	}
 	
 	athread_put(PE_MODE, &s_x[0], &h_x[0], MAX_DATA * 4, &put_reply, 0, 0);
@@ -77,8 +77,8 @@ void par2(Args_t arg,volatile int get_reply, volatile int put_reply, int argn)
 	while (get_reply != argn);
 
 	par_local_trans_head(id, s_Q[0], s_QN[0], h_B, h_S, h_D, h_N);
-    par_local_trans_head(id, s_K[0], s_KN[0], h_B, h_S, h_D, h_N);
-    par_local_trans_head(id, s_V[0], s_VN[0], h_B, h_S, h_D, h_N);
+    	par_local_trans_head(id, s_K[0], s_KN[0], h_B, h_S, h_D, h_N);
+    	par_local_trans_head(id, s_V[0], s_VN[0], h_B, h_S, h_D, h_N);
 
 
 	athread_put(PE_MODE, &s_Q[0], &h_Q[0], MAX_DATA * 4, &put_reply, 0, 0);
